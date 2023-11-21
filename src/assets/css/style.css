@@ -1,0 +1,97 @@
+:root {
+  font-family: Poppins;
+  font-weight: 400;
+  --bs-primary: rgb(207, 26, 74) !important;
+  --bs-blue: rgb(207, 26, 74) !important;
+  --primary-color : purple;
+  /* --secondary-color : purple; */
+
+}
+div, input, span ,.btn {
+  font-family: Poppins;
+  font-size: .8rem;
+}
+input:focus, textarea:focus {
+  box-shadow: none !important;
+  border-color: var(--bs-primary) !important;
+  border-width: .01rem !important;
+}
+a {
+  color: unset;
+  text-decoration: unset;
+}
+
+
+
+h-400px {
+  /* max-height: 100px !important; */
+}
+.bold {
+  font-family: Poppins-Bold;
+}
+.bg-whitesmoke {
+  background-color: whitesmoke;
+}
+.text-whitesmoke {
+  color: whitesmoke;
+}
+.bg-lightgray {
+  background-color: lightgray;
+}
+.text-lightgray {
+  color: lightgray;
+}
+.rounded-7{
+  border-radius: 7px;
+}
+.w-fit {
+  max-width: fit-content;
+}
+
+/* Bootrap Overlay */
+.btn{
+  border: 0px;
+}
+.btn-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+/* OverLay PrimeVue */
+.p-sidebar {
+  background-color: whitesmoke;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../font/Poppins/Poppins-Light.ttf');
+}
+@font-face {
+  font-family: Poppins-Bold;
+  src: url('../font/Poppins/Poppins-Bold.ttf');
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@media(min-width:768px){
+  .w-lg-fit{
+    width: fit-content !important;
+  }
+}
