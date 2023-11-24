@@ -43,8 +43,9 @@
             Create Design setting for the Venue
           </label>
         </div>
-        <div class="bg-whitesmoke mt-2 mx-2 rounded-7" style="min-height: 200px;">
-
+        <div class="bg-whitesmoke mt-2 mx-2 rounded-7">
+          <venue-builder class=""  style="min-height: 300px;"
+          ></venue-builder>
         </div>
       </div>
       <button class="btn btn-sm small btn-primary mt-3 mb-4 w-100 w-lg-fit">
@@ -60,6 +61,7 @@ import Card from "primevue/card"
 import CheckBox from "primevue/checkbox"
 import FileUpload from "primevue/fileupload"
 import Dropdown from 'primevue/dropdown';
+import VenueBuilder from "@/components/VenueBuilder.vue";
 
 </script>
 

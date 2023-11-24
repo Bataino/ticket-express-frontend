@@ -13,31 +13,33 @@
             <InputText v-model="value1" placeholder="Keyword" class="w-100 border-0" />
           </span>
         </div>
-        <div class="btn btn-primary small pt-2 rounded-7 ms-2">
-          <span>search</span>
+        <div class="btn btn-primary small d-flex align-items-center rounded-7 ms-2">
+          <span class="my-auto">search</span>
         </div>
       </div>
       <div class="d-flex flex-wrap justify-content-center justify-content-md-start mw-100 p-2 mt-3">
-      <card style="min-width:290px;max-width: 300px;" class="m-2 me-3" v-for="product in products" @click="$router.push('/event/id')">
-        <template #title> 
-          <div class="h6 bold text-muted">
-            Recent Orders 
-            <icon icon="tabler:edit" class="fs-1 float-end text-muted" @click="$router.push('/event/edit/id')" />
-          </div>
-        </template>
-        <template #subtitle> Event Name </template>
-        <template #content>
-          <h2 class="bold text-primary">$24</h2>
-          <small>34 Tickets sold</small>
-        </template>
-        <!-- <template #footer>
+        <card style="min-width:290px;max-width: 300px;" class="m-2 me-3" v-for="event in $store.state.events"
+          @click="$router.push('/event/' + event.id)">
+          <template #title>
+            <div class="h6 bold text-muted">
+              {{ event.title }}
+              <icon icon="tabler:edit" class="fs-1 float-end text-muted"
+                @click="$router.push('/event/edit/' + event.id)" />
+            </div>
+          </template>
+          <template #subtitle> <span class="cuttext">{{ event.description }} </span> </template>
+          <template #content>
+            <h2 class="bold text-primary">${{ getTotalTicketsCost(event.orders) }}</h2>
+            <small>{{ event.tickets.length }} Tickets sold</small>
+          </template>
+          <!-- <template #footer>
           <div class="d-flex justify-content-around text-muted">
             <icon icon="tabler:edit" class="fs-1" />
           </div>
         </template> -->
-      </card>
+        </card>
 
-    </div>
+      </div>
     </div>
     <!-- <Dialog>
 
@@ -60,9 +62,36 @@ export default {
   data() {
     return {
       products: [
-        {},{},{}
+        {}, {}, {}
       ]
     }
+  },
+  methods: {
+    getTotalTicketsCost(orders) {
+      if (orders[0]) {
+        let total = orders.reduce((acc, e) => {
+          console.log(acc, e)
+          return acc + e.price
+        }, 0)
+        return total
+      }
+
+      return 0
+    }
+  },
+  async created() {
+    await this.$store.dispatch('getUserEventService')
+    // console.log(localStorage.getItem('token'))
   }
 }
 </script>
+
+<style>
+.cuttext {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 20px;
+  height: 1.2em;
+  white-space: nowrap;
+}
+</style>

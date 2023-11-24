@@ -25,7 +25,7 @@
                 John Doe
             </button>
             <!-- <Button type="button" icon="pi pi-ellipsis-v"/> -->
-            <Menu ref="menu" id="overlay_menu_setting" :model="items" :popup="true" />
+            <Menu ref="menu" id="overlay_menu_setting" :model="items" :popup="true" class="small border" />
             <Menu ref="eventMenu" id="overlay_menu_event" :model="events" :popup="true" />
         </div>
         <side-bar v-model:visible="visible">
@@ -70,11 +70,12 @@ export default {
             items: [
                 {
                     label: 'Profile',
-                    icon: 'pi pi-plus'
+                    icon: 'pi pi-user'
                 },
                 {
                     label: 'Logout',
-                    icon: 'pi pi-search'
+                    icon: 'pi pi-sign-out',
+                    command: () => this.logout()
                 }
             ],
             events: [
@@ -94,7 +95,10 @@ export default {
         }
     },
     methods: {
-
+        logout(){
+            this.$store.commit('deleteLocal', 'token')
+            this.$router.push('/login')
+        }
     }
 }
 </script>

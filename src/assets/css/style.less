@@ -3,7 +3,7 @@
   font-weight: 400;
   --bs-primary: rgb(207, 26, 74) !important;
   --bs-blue: rgb(207, 26, 74) !important;
-  --primary-color : purple;
+  --primary-color : #800080;
   /* --secondary-color : purple; */
 
 }
@@ -23,6 +23,16 @@ a {
 
 
 
+.cut-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 77vw;
+  height: 1.2em;
+  white-space: nowrap;
+}
+.pe-point {
+  cursor: pointer !important;
+}
 h-400px {
   /* max-height: 100px !important; */
 }
@@ -44,11 +54,15 @@ h-400px {
 .rounded-7{
   border-radius: 7px;
 }
+.rounded-20{
+  border-radius: 20px;
+}
 .w-fit {
   max-width: fit-content;
 }
 
 /* Bootrap Overlay */
+.small{}
 .btn{
   border: 0px;
 }
@@ -63,10 +77,35 @@ h-400px {
 .text-primary {
   color: var(--primary-color) !important;
 }
+
 /* OverLay PrimeVue */
+.p-menu {
+  border:.1rem solid lightgray !important;
+  .small;
+}
+.p-menu-list{
+  .small;
+  margin-bottom: 0px;
+}
+.p-menuitem-text{
+  .small !important
+}
+.p-chips {
+  min-width: 100% !important;
+}
 .p-sidebar {
   background-color: whitesmoke;
 }
+.p-dropdown-items{
+  margin-bottom: 0px;
+  padding-left: 0px;
+}
+.p-dropdown-item.p-highlight{
+  background-color: #8a368a;
+}
+
+
+
 
 @font-face {
   font-family: Poppins;
@@ -93,5 +132,8 @@ h-400px {
 @media(min-width:768px){
   .w-lg-fit{
     width: fit-content !important;
+  }
+  .cut-text {
+      width: 88vw;
   }
 }

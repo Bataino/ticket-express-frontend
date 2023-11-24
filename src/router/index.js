@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import store from '../store'
 
 const routes = [
   {
@@ -23,11 +24,19 @@ const routes = [
     
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/Login.vue')
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: () => import('@/views/Signup.vue')
+  },
+  {
     path: '/events/user',
     name: 'user_event',
-    component: function () {
-      return import('@/views/event/UserEvents.vue')
-    }
+    component: () => import('@/views/event/UserEvents.vue')
   },
   {
     path: '/event/add',
@@ -66,9 +75,16 @@ const routes = [
   },
   {
     path: '/campaigns',
-    name: 'campaign',
+    name: 'campaigns',
     component: function () {
       return import('@/views/campaign/Campaign.vue')
+    }
+  },
+  {
+    path: '/campaign/id',
+    name: 'campaign_details',
+    component: function () {
+      return import('@/views/campaign/CampaignDetails.vue')
     }
   },
   {
@@ -99,11 +115,31 @@ const routes = [
       return import('@/views/profile/Profile.vue')
     }
   },
+  
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
+})
+
+const protected_routes = ["profile",  "home", "edit_venue", "venues",  "add_event", "user_event",
+  "add_venue", "campaign_details", "campaigns","orders", "event_orders", "event_details", "edit_event"
+];
+
+const auth_routes = ["login", "signup"];
+
+router.beforeEach((to, from) => {
+  if(protected_routes.includes(to.name) && !store.getters.token){
+    return {
+      name:'login'
+    }
+  }
+  else if(auth_routes.includes(to.name) && store.getters.token){
+    return {
+      name:'home'
+    }
+  }
 })
 
 export default router

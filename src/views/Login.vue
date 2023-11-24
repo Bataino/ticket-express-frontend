@@ -2,24 +2,17 @@
     <div class="p-4">
         <bw-header :type='1'></bw-header>
         <div class="d-flex">
-            <div class="w-100 text-center pt-3">
-                <h5 class="text-primary bold">SignUp</h5>
-                <div class="text-start p-3 px-md-5 pt-4">
-                    <div class="border p-3 px-3 small rounded-7 d-flex align-items-center">
-                        <icon icon="flat-color-icons:google" class="fs-3" />
-                        <span class="ms-5">Sign in with google</span>
-                    </div>
-
-                    <div class="py-3 small text-center">
-                        OR
-                    </div>
+            <div class="w-100 w-md-50 text-center pt-5">
+                <h5 class="text-primary bold">Login</h5>
+                <form class="text-start p-3 px-md-5 pt-4" @submit.prevent="login">
+                    <div class="text-start text-danger mb-2 d-none fw-bold" ref="loginError">Email or Password Incorrect, Try again!</div>
                     <div class="">
                         <label class="small fw-bold">Email Address</label>
-                        <pv-inputtext :class="inputClass" placeholder="+23470229933"></pv-inputtext>
+                        <pv-inputtext :class="inputClass" v-model="user.email" placeholder="jondoe@example.com"></pv-inputtext>
                     </div>
                     <div class="">
                         <label class="small fw-bold">Email address</label><br>
-                        <password class="inputClass mt-1 w-100 position-relative" placeholder="****" toggleMask :feedback="false"  />
+                        <password class="inputClass mt-1 w-100 position-relative" v-model="user.password" placeholder="****" toggleMask :feedback="false"  />
                     </div>
                     <div class="text-center small pt-3">
                         <a href="/login" class="text-danger">Forgot Password?</a>
@@ -30,11 +23,11 @@
                     <button class="rounded-7 border-0 fw-bold mt-2 btn-primary w-100 p-3 shadow-md">
                         Login
                     </button>
-                </div>
+                </form>
             </div>
             <div class="p-2 d-none d-md-block">
                 <div class="w-100 my-5">
-                    <img src="/images/guy-playing-game.png" class="w-100"/>
+                    <img src="https://www.shutterstock.com/image-illustration/3d-young-man-marker-checking-260nw-2329113415.jpg" class="w-100"/>
                     <div class="float-end mt-4 bold text-primary">
                         Make your Life with Us!
                     </div>
@@ -45,14 +38,36 @@
 </template>
 
 <script setup>
-    import Password from 'primevue/password';
+import Password from 'primevue/password';
 </script>
 
 <script>
     export default {
         data(){
             return {   
-                inputClass:"w-100 mt-1 mb-3 p-2 small border"
+                inputClass:"w-100 mt-1 mb-3 p-2 small border",
+                user:{
+                    password:'',
+                    email:''
+                }
+            }
+        },
+        methods: {
+            async login(){
+                this.$widget.openLoading()
+                // console.log(this.$store)
+
+                const login =  await this.$store.dispatch('loginService', this.user)
+
+                if(login.response){
+                    this.$refs.loginError.classList.remove('d-none')
+                    this.$toast.error('Invalid Login Credentials')
+                    return
+                }
+                console.log(login)
+                this.$router.push('/')
+                this.$widget.dismiss()
+
             }
         }
     }
