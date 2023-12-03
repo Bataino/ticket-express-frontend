@@ -6,6 +6,7 @@ import vueCountryRegionSelect from 'vue3-country-region-select'
 import VueKonva from 'vue-konva';
 import ToastService from '@meforma/vue-toaster';
 import Widget from '@/functions/widget';
+import ConfirmationService from 'primevue/confirmationservice';
 
 import store from './store'
 import router from './router'
@@ -27,6 +28,7 @@ const app = createApp(App)
 .use(PrimeVue)
 .use(vueCountryRegionSelect)
 .use(VueKonva)
+.use(ConfirmationService)
 .use(ToastService, {
     'position':'top-right',
     duration:3000
@@ -37,6 +39,9 @@ const app = createApp(App)
 .component('icon', Icon)
 
 app.config.globalProperties.$widget = Widget
+app.config.globalProperties.$te = {
+    currency:"$"
+}
 
 
 app.mount('#app')

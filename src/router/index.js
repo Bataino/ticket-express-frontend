@@ -46,7 +46,7 @@ const routes = [
     }
   },
   {
-    path: '/event/edit/id:',
+    path: '/event/edit/:id',
     name: 'edit_event',
     component: function () {
       return import('@/views/event/EditEvent.vue')
@@ -67,7 +67,7 @@ const routes = [
     }
   },
   {
-    path: '/orders/:eventId',
+    path: '/orders/:event_id',
     name: 'event_orders',
     component: function () {
       return import('@/views/Orders.vue')

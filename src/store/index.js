@@ -2,6 +2,9 @@ import { createStore } from 'vuex'
 import userServices from "@/services/user"
 import eventServices from "@/services/event"
 import venueServices from "@/services/venue"
+import ticketLevelServices from "@/services/ticket_level"
+import discountServices from "@/services/discount"
+import orderServices from "@/services/order"
 
 export default createStore({
   state: {
@@ -11,6 +14,11 @@ export default createStore({
     tickets: [],
     campaigns: [],
     venues: [],
+    event:{},
+    orders:[],
+    allOrders:{
+      data:[]
+    }
   },
   getters: {
     token(state) {
@@ -35,7 +43,10 @@ export default createStore({
   actions: {
     ...userServices,
     ...eventServices,
-    ...venueServices
+    ...venueServices,
+    ...ticketLevelServices,
+    ...discountServices,
+    ...orderServices,
   },
   modules: {
   }

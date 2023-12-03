@@ -4,7 +4,7 @@ export default {
     async getVenueService(store, data){
         const res = await http.get('venue')
         if(res.data?.success){
-            store.commit("update", ['venue', res.data.data])
+            store.commit("update", ['venues', res.data.data])
         }
         return res
     },

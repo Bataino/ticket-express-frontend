@@ -10,10 +10,11 @@
                 </div>
                 <span class="align-items-center ps-5 d-none d-md-flex">
                     <router-link to="/" class="me-3 ">DashBoard</router-link>
-                    <div class="me-3" @click="toggleEvent" aria-haspopup="true" aria-controls="overlay_menu_event">Events
-                    </div>
-                    <router-link to="/orders" class="me-3">Orders</router-link>
-                    <router-link to="/campaign" class="me-3">Campaigns</router-link>
+                    <!-- <div class="me-3 pe-point" @click="toggleEvent" aria-haspopup="true" aria-controls="overlay_menu_event">Events
+                    </div> -->
+                    <router-link to="/events/user" class="me-3">Events</router-link>
+                    <!-- <router-link to="/orders" class="me-3">Orders</router-link> -->
+                    <router-link to="/campaigns" class="me-3">Campaigns</router-link>
                     <router-link to="/policy" class="me-3">Policy & Refunds</router-link>
                     <router-link to="/venues" class="">Venues</router-link>
                 </span>
@@ -25,17 +26,24 @@
                 John Doe
             </button>
             <!-- <Button type="button" icon="pi pi-ellipsis-v"/> -->
-            <Menu ref="menu" id="overlay_menu_setting" :model="items" :popup="true" class="small border" />
-            <Menu ref="eventMenu" id="overlay_menu_event" :model="events" :popup="true" />
+            <Menu ref="menu" id="overlay_menu_setting" :model="items" :popup="true" class="small border">
+            </Menu>
+            <!-- <Menu ref="eventMenu" id="overlay_menu_event" :model="[...$store.state.events.slice(0,5)]" :popup="true" >
+                <template #item="{item,props}" >
+                    <a href="" class="p-3" style="min-height: 30px;">
+                        {{ item.title }}
+                    </a>
+                </template>
+            </Menu> -->
         </div>
         <side-bar v-model:visible="visible">
             <div class="px-5">
-                <router-link to="/" class="me-3 mb-4 ">DashBoard</router-link>
-                <div class="me-3 mb-4" @click="toggleEvent" aria-haspopup="true" aria-controls="overlay_menu_event">Events
-                </div>
-                <router-link to="/orders" class="me-3 mb-4">Orders</router-link>
-                <router-link to="/campaign" class="me-3 mb-4">Campaigns</router-link>
-                <router-link to="/policy" class="me-3 mb-4">Policy & Refunds</router-link>
+                <router-link to="/" class="me-3 ">DashBoard</router-link><br><br>
+                <router-link to="/events/user" class="me-3 mb-4">Events</router-link><br><br>
+                <router-link to="/events/user" class="me-3">Events</router-link><br><br>
+                <!-- <router-link to="/orders" class="me-3 mb-4">Orders</router-link><br><br> -->
+                <router-link to="/campaigns" class="me-3 mb-4">Campaigns</router-link><br><br>
+                <router-link to="/policy" class="me-3 mb-4">Policy & Refunds</router-link><br><br>
                 <router-link to="/venues" class="">Venues</router-link>
             </div>
         </side-bar>
@@ -79,14 +87,14 @@ export default {
                 }
             ],
             events: [
-            {
+                {
                     label: 'View all events',
-                    class:"small",
-                    to:"/event/id"
+                    class: "small",
+                    to: "/event/id"
                 },
                 {
                     label: 'Event 1',
-                    to:"/event/id"
+                    to: "/event/id"
                 },
                 {
                     label: 'Event 2',
@@ -95,10 +103,15 @@ export default {
         }
     },
     methods: {
-        logout(){
+        logout() {
+            console.log('log att')
+            localStorage.clear()
             this.$store.commit('deleteLocal', 'token')
-            this.$router.push('/login')
+            location.href = '/login'
         }
+    },
+    async created() {
+        // await this.$store.dispatch("getUserEventService")
     }
 }
 </script>
