@@ -60,7 +60,7 @@
             </div>
             <div class="p-2 d-none d-md-block">
                 <div class="w-100 my-5">
-                    <img src="/images/3d-hands-holding-cash.png" class="w-100"/>
+                    <img src="@assets/images/events.jpg" class="w-100"/>
                     <div class="float-end mt-4 bold text-primary">
                         Make your Life with Us!
                     </div>
