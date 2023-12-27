@@ -1,4 +1,6 @@
 import { createApp } from 'vue'
+import store from './store'
+
 import App from './App.vue'
 import PrimeVue from 'primevue/config';
 import { Icon } from "@iconify/vue"
@@ -8,7 +10,6 @@ import ToastService from '@meforma/vue-toaster';
 import Widget from '@/functions/widget';
 import ConfirmationService from 'primevue/confirmationservice';
 
-import store from './store'
 import router from './router'
 
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
@@ -23,8 +24,8 @@ import Button from 'primevue/button';
 
 
 const app = createApp(App)
-.use(router)
 .use(store)
+.use(router)
 .use(PrimeVue)
 .use(vueCountryRegionSelect)
 .use(VueKonva)

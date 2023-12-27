@@ -6,15 +6,19 @@ import ticketLevelServices from "@/services/ticket_level"
 import discountServices from "@/services/discount"
 import orderServices from "@/services/order"
 
-export default createStore({
+const store = createStore({
   state: {
-    user: null,
+    user: {},
     token: null,
     events: [],
     tickets: [],
+    ticket_levels: [],
     campaigns: [],
     venues: [],
-    event:{},
+    orderSummary:{},
+    event:{
+      venue:{}
+    },
     orders:[],
     allOrders:{
       data:[]
@@ -51,4 +55,8 @@ export default createStore({
   modules: {
   }
 })
+
+// store.subscribeAction((action, state) => {})
+
+export default store
 

@@ -1,7 +1,13 @@
 import http from "./http"
 
 export default {
-    async getOrdersService(store, {event_id, page = 1, params}) {
+    async createOrderService({ commit }, data) {
+        const res = await http.post(`order`, data)
+        if (res.response)
+            return res.response
+        return res.data
+    },
+    async getOrdersService(store, { event_id, page = 1, params }) {
         const paginate = 25
         const res = await http.get(`order/event/${event_id}?page=${page}&paginate=${paginate}`, {
             params
@@ -14,7 +20,7 @@ export default {
     async getOrderSummaryService(store, event_id) {
         const res = await http.get(`order/summary/${event_id}`)
         if (res.data?.success) {
-            // store.commit("update", ['orders', res.data.data])
+            store.commit("update", ['orderSummary', res.data.data])
         }
         return res.data
     },

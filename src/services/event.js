@@ -22,7 +22,7 @@ export default {
             }
         })
         if (res.response)
-            return res.response
+            return res.response.data
         return res.data
     },
     async updateEventService({ commit }, { data, id }) {
@@ -32,15 +32,21 @@ export default {
             }
         })
         if (res.response)
-            return res.response
+            return res.response.data
 
         commit("update", ["event", res.data.data])
+        return res.data
+    },
+    async deleteEventService({ commit }, id) {
+        const res = await http.delete('event/' +id,)
+        if (res.response)
+            return res.response.data
         return res.data
     },
     async getSingleEventService({ commit }, id) {
         const res = await http.get('event/' + id)
         if (res.response)
-            return res.response
+            return res.response.data
 
         commit("update", ["event", res.data.data])
         return res.data

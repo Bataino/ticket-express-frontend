@@ -1,26 +1,14 @@
 <template>
 	<div class="">
-		<te-header />
+		<!-- <te-header /> -->
 		<div class="p-3">
 			<div class="mb-3 d-flex flex-wrap">
-				<div class="bg-primary rounded-7 bg-gradient text-light mt-2 w-fit p-3 pe-5 me-2">
-					Today<br>
-					<span class="h5 bold">
-						{{ $widget.getTicketNumber(summary.$s) ?? 0 }} Tickets
-					</span>
-				</div>
-				<div class="bg-success rounded-7 bg-gradient text-light mt-2 w-fit p-3 pe-5 me-2">
-					Today<br>
-					<span class="h5 bold me-5">
-						{{ $te.currency }}{{ summary.sale_today ?? 0 }}
-					</span>
-				</div>
-				<div class="bg-warning rounded-7 bg-gradient text-dark mt-2 w-fit p-3 pe-5 me-2">
+				<!-- <div class="bg-warning rounded-7 bg-gradient text-dark mt-2 w-fit p-3 pe-5 me-2">
 					Total Order<br>
 					<span class="h5 bold">
 						{{ $te.currency }}{{ summary.total_sale ?? 0 }}
 					</span>
-				</div>
+				</div> -->
 			</div>
 			<div class="border rounded-7 p-2">
 				<form class="d-flex w-100 justify-content-center p-3" @submit.prevent="searchOrders">
@@ -31,8 +19,13 @@
 				</form>
 				<DataTable :value="$store.state.orders.data" lazy paginator :first="0" :rows="25" v-model:filters="filters"
 					ref="dt" dataKey="id" :totalRecords="$store.state.orders.total" :loading="loading"
-					@page="onPage($event)" @sort="onSort($event)" @filter="onFilter($event)" filterDisplay="row"
-					:globalFilterFields="['summary']" tableStyle="">
+					@page="onPage($event)" @sort="onSort($event)" @row-click="showOrder($event)" tableStyle="">
+					<template #empty>
+						<div class="text-center h5 text-muted bold py-5">
+							<icon icon="teenyicons:mood-sad-outline" class="fs-2" />
+							You have not made any orders
+						</div>
+					</template>
 					<Column field="id" header="ID" sortable>
 					</Column>
 					<Column field="summary" header="Summary">
@@ -65,37 +58,75 @@
 				</DataTable>
 			</div>
 		</div>
-		<Dialog modal v-model:visible="visible" header="Transaction Details">
+		<Dialog modal v-model:visible="visible" header="Order Details" class="w-75" @hide="visible=false;modalData = {};">
 			<div class="p-3 p-md-3 w-100 text-nowrap">
 				<div class="fw-bold">
-					Summary
+					Summary<br>
+					<small class="fw-normal">
+						{{ modalData.summary }}
+					</small>
 					<hr />
 				</div>
-				<div :class="classes[0]">
+				<div class="w-100 my-2 d-flex justify-content-between">
 					<div class="w-50 pe-5">
-						Date
+						Event Name:
 					</div>
-					<div class="text-nowrap text-end">
-						20-08-2003
+					<div class="w-50 text-nowrap text-end">
+						{{ modalData.event.title}}
 					</div>
 				</div>
-				<div :class="classes[0]">
+				<div class="w-100 my-2 d-flex justify-content-between">
 					<div class="w-50 pe-5">
-						Transaction ID
+						Price :
 					</div>
-					<div class="text-nowrap text-end">
-						20082003773829012
+					<div class="w-50 text-nowrap text-end">
+						{{ $te.currency }}{{ modalData.price }}
 					</div>
 				</div>
-				<div :class="classes[0]">
+				<div class="w-100 my-2 d-flex justify-content-between">
 					<div class="w-50 pe-5">
-						Destination
+						Payment details :
 					</div>
-					<div class="text-nowrap text-end">
-						9066299190
+					<div class="w-50 text-nowrap text-end">
+						{{  modalData.payment_details  }}
 					</div>
 				</div>
 				<hr />
+				<div class="w-100 my-2 d-flex justify-content-between" v-for="(i, index) in modalData.items">
+					<div class="">
+						{{ getTicketLevel(i).title}} :
+					</div>
+					<div class=" text-nowrap text-end">
+						{{index}}
+					</div>
+				</div>
+				<hr />
+				<div class="" style="min-width: 300px;">
+					<div class="w-100 my-2 d-flex justify-content-between">
+						<div class="">
+							User :
+						</div>
+						<div class=" text-nowrap text-end">
+							{{ modalData.user.first_name }} {{ modalData.user.last_name}}
+						</div>
+					</div>
+					<div class="w-100 my-2 d-flex justify-content-between">
+						<div class="">
+							Email :
+						</div>
+						<div class=" text-end">
+							{{ modalData.user.email }}
+						</div>
+					</div>
+					<div class="w-100 my-2 d-flex justify-content-between">
+						<div class="">
+							Phone :
+						</div>
+						<div class=" text-nowrap text-end">
+							{{ modalData.user.phone }}
+						</div>
+					</div>
+				</div>
 				<div class="text-end text-secondary pt-3">
 					<icon icon="bxs:copy" class="fs-4" />
 					<icon icon="ri:share-line" class="ms-2 fs-4" />
@@ -109,6 +140,7 @@
 import Dialog from "primevue/dialog";
 import DataTable from "primevue/datatable"
 import Column from "primevue/column"
+
 </script>
 
 <script>
@@ -123,6 +155,7 @@ export default {
 	data() {
 		return {
 			visible: false,
+			modalData: {},
 			orders: [],
 			lazyParams: {},
 			loading: false,
@@ -131,14 +164,14 @@ export default {
 			filters: {
 				global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 			},
-			summary:{}
+			summary: {},
 		}
 	},
 	methods: {
 		async searchOrders() {
 			this.$widget.openLoading()
 			await this.getOrdersService({
-				event_id: this.$route.params.event_id,
+				event_id: this.$route.params.id,
 				page: this.page,
 				params: {
 					filter: this.filter
@@ -146,14 +179,18 @@ export default {
 			})
 			this.$widget.dismiss()
 		},
-		async getOrderSummary(){
+		async getOrderSummary() {
 			const res = await this.getOrderSummaryService(this.$route.params.event_id)
 			this.summary = res.data
 		},
 		showOrder(event) {
-			this.modalEvent = event.data
+			this.modalData = event.data
 			this.visible = true
 			console.log(event.data)
+		},
+		getTicketLevel(id) {
+			console.log(this.$store.state.event.ticket_level)
+			return this.$store.state.event.ticket_levels.filter((e) => e.id = id)?.[0]
 		},
 		getNewPagination(event) {
 			console.log(event, this.page)
@@ -165,7 +202,7 @@ export default {
 				params: {
 					sortBy: event.sortField,
 					sortOrder: event.sortOrder == 1 ? 'desc' : 'asc',
-					filter:this.filter
+					filter: this.filter
 				}
 			})
 			this.loading = false
@@ -181,13 +218,15 @@ export default {
 				params: {
 					sortBy: sortVal.sortField,
 					sortOrder: sortVal.sortOrder == 1 ? 'desc' : 'asc',
-					filter:this.filter
+					filter: this.filter
 				}
 			});
 		},
 		...mapActions(["getSingleEventService", "getOrdersService", "getOrderSummaryService"])
 	},
 	async created() {
+		this.$route.params.event_id = this.$route.params.id 
+		// await this.getTicketLevelsService()
 		await this.getSingleEventService(this.$route.params.event_id)
 		await this.getOrdersService({ event_id: this.$route.params.event_id })
 		this.getOrderSummary()

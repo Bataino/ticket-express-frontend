@@ -2,7 +2,7 @@
   <div class="">
     <te-header></te-header>
     <div class="px-4">
-      <div class="float-end pe-point d-flex align-items-center p-2 text-primary bold mb-3"
+      <div class="float-end pe-point mt-2 d-flex align-items-center p-2 text-primary bold mb-3"
         @click="$router.push('/event/add')">
         <icon icon="solar:calendar-add-bold" class="fs-3 me-1" />
         Add Event
@@ -19,36 +19,32 @@
         </div> -->
       </div>
       <div class="py-4 px-1">
-        <div class="row mx-center">
+        <div class="row mx-center" v-if="events.length != 0">
           <div class="col-12 col-sm-6 col-md-4 co-lg-3" v-for="event in events">
-            <card style="min-width:100%;" class="m-2 mw-100 me-3 border shadow-none"
+            <card style="min-width:100%;" class="m-2 mw-100 me-3 border shadow-sm"
               @click="$router.push('/event/' + event.id)">
               <template #title>
                 <div class="h6 bold text-muted">
                   {{ event.title }}
-                  <icon icon="tabler:edit" class="fs-1 float-end text-muted"
-                    @click="$router.push('/event/edit/' + event.id)" />
                 </div>
               </template>
-              <template #subtitle> <span class="cuttext">{{ event.description }} </span> </template>
+              <template #subtitle> <div class="cuttext">{{ event.description }} </div> </template>
               <template #content>
                 <h2 class="bold text-primary">${{ getTotalTicketsCost(event.orders) }}</h2>
                 <small>{{ event.tickets.length }} Tickets sold</small>
               </template>
-              <!-- <template #footer>
-          <div class="d-flex justify-content-around text-muted">
-            <icon icon="tabler:edit" class="fs-1" />
-          </div>
-        </template> -->
             </card>
           </div>
         </div>
-
+        <div class="text-center h5 text-muted mt-3 bold py-5" v-else>
+          <icon icon="teenyicons:mood-sad-outline" class="fs-1" />
+           No event could be found<br>
+           <router-link to="/event/add" class="btn text-primary bold bg-whitesmoke small mt-3">
+            Create one
+           </router-link>
+        </div>
       </div>
     </div>
-    <!-- <Dialog>
-
-    </Dialog> -->
   </div>
 </template>
 
@@ -102,7 +98,8 @@ export default {
 .cuttext {
   text-overflow: ellipsis;
   overflow: hidden;
-  width: 20px;
+  width: 100%;
+  max-width: 75% !important;
   height: 1.2em;
   white-space: nowrap;
 }

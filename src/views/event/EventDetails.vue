@@ -2,20 +2,31 @@
   <div class="">
     <te-header></te-header>
     <div class="py-2 pe-3 text-end bg-whitesmoke text-primary">
-      <span class=" text-secondary me-3">
+      <!-- <span class=" text-secondary me-3" @click="deleteEvent">
         Delete
-      </span>
-      <span class="text-warning me-3">
+      </span> -->
+      <button class="pe-point bold me-3 border-0 bg-transparent text-primary" @click="copyLink" v-if="$store.state.event.is_publish == 1">
+        Share
+      </button>
+      <a :href="getLink()" v-if="$store.state.event.ticket_levels?.[0]" class="pe-point bold me-3 border-0 bg-transparent text-dark">
+        View
+      </a>
+      <router-link :to="'/event/edit/' + $route.params.id" class="pe-point text-warning bold me-3">
         Edit
-      </span>
-      <span class="fw-bold">
-        Publish Event
+      </router-link>
+      <span class="" @click="publishEvent">
+        <span class="pe-point bold" v-if="$store.state.event.is_publish == 0">
+          Publish
+        </span>
+        <span class="pe-point text-muted" v-else>
+          Unpublish
+        </span>
       </span>
     </div>
     <div class="px-4 py-3 ">
 
-      <span class="bold text-primary h3">Event Name</span>
-      <div class="float-end p-2 ">
+      <span class="bold text-primary h3">{{ $store.state.event.title }}</span>
+      <div class="py-2 ">
         <icon icon="lets-icons:date-today-duotone" class="fs-4 text-primary" />
         <span class="fw-bold">
           {{ new Date($store.state.event.start).toLocaleString() }} - {{ new
@@ -27,29 +38,44 @@
 
       <div class="mt-4">
         <div class="d-flex flex-wrap">
-          <router-link :to="/orders/+ $store.state.event.orders.id" class="pe-point bg-primary rounded-7 bg-gradient text-light w-fit p-3 pe-5 me-2">
+          <div class="bg-primary rounded-7 bg-gradient text-light mt-2 w-fit p-3 pe-5 me-2">
+            Today<br>
             <span class="h5 bold">
-              {{ $te.currency }}{{ $widget.getTotalOrders($store.state.event.orders) }}
+              {{ $widget.getTicketNumber($store.state.orderSummary.orders_today) ?? 0 }} Tickets
             </span>
-            Order processed
-          </router-link>
-          <div class="pe-point bg-primary rounded-7 bg-gradient text-light mt-2 w-fit p-3 pe-5 me-2">
-            <span class="h5 bold">
-              {{ $store.state.event.tickets?.length }}
-            </span>
-            Ticket sold
           </div>
-          <div class="pe-point rounded-7 bold mt-2 bg-light text-primary w-fit px-3 py-3 me-2">
+          <div class="bg-success rounded-7 bg-gradient mt-2 mt-md-0 text-light mt-2 w-fit p-3 pe-5 me-2">
+            Today<br>
+            <span class="h5 bold me-5">
+              {{ $te.currency }}{{ $store.state.orderSummary.sale_today ?? 0 }}
+            </span>
+          </div>
+          <div class="pe-point bg-primary rounded-7 bg-gradient mt-2 mt-md-0 text-light w-fit p-3 pe-5 me-2">
+            Order processed<br>
+            <span class="h5 bold">
+              {{ $te.currency }}{{ $store.state.orderSummary.total_sale }}
+            </span>
+          </div>
+          <div class="pe-point bg-warning rounded-7 bg-gradient mt-2 mt-md-0 text-dark mt-2 w-fit p-3 pe-5 me-2">
+            Ticket sold<br>
+            <span class="h5 bold">
+              {{ $store.state.tickets?.length ?? 0 }}
+            </span>
+          </div>
+          <!-- <div class="pe-point rounded-7 bold mt-2 bg-light text-primary w-fit px-3 py-3 me-2">
             View Campaigns
-          </div>
+          </div> -->
           <!-- <div class="pe-point rounded-7 bold bg-light mt-2 text-secondary w-fit px-3 py-3">
             View Tickets
           </div> -->
         </div>
       </div>
 
+      <div class="my-3 bg-whitesmoke rounded-7 py-2">
+        <select-button class="m" :options="options" optionLabel="label" dataKey="value" v-model="option"></select-button>
+      </div>
 
-      <div>
+      <div class="pb-5" v-if="option.value == 'ticket_level'">
         <card class="border shadow-sm rounded-7">
           <template #title>
             <span class="fs-5 bold text-primary">
@@ -58,9 +84,9 @@
           </template>
           <template #content>
             <div class="row">
-              <div class="col-12 col-md-7 col-lg-8">
+              <div class="col-12">
                 <div class="">
-                  <DataTable :value="$store.state.event.ticket_levels" tableStyle="">
+                  <DataTable :value="$store.state.ticket_levels" tableStyle="">
                     <Column field="title" header="Title"></Column>
                     <Column field="price" header="Price">
                       <template #body="e">
@@ -69,7 +95,7 @@
                     </Column>
                     <Column field="quantity" header="Qty"></Column>
                     <Column field="limit" header="Limit"></Column>
-                    <Column field="is_available" header="Availablity">
+                    <Column field="is_available" header="Availablity" v-if="$store.state.ticket_levels.length != 1">
                       <template #body="e">
                         <button class="bg-danger text-nowrap small border-0 rounded text-white"
                           @click="toggleTicketLevel(e.data)" v-if="e.data.is_available">
@@ -138,7 +164,16 @@
         </card>
       </div>
 
-      <div>
+      <div class="" v-else-if="option.value == 'order'">
+        <order-page></order-page>
+      </div>
+
+      <div class="" v-else-if="option.value == 'ticket'">
+        <ticket-page></ticket-page>
+      </div>
+
+
+      <div class="d-none">
         <card class="border shadow-sm rounded-7">
           <template #title>
             <span class="fs-5 bold text-primary">
@@ -220,6 +255,10 @@ import Card from "primevue/card"
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import CheckBox from "primevue/checkbox"
+import SelectButton from "primevue/selectbutton"
+import OrderPage from "@/views/Orders.vue"
+import TicketPage from "@/views/Tickets.vue"
+
 </script>
 
 <script>
@@ -235,10 +274,41 @@ export default {
       ticketLevel: {},
       updateTicket: null,
       updateDisc: null,
-      discount: {}
+      discount: {},
+      option: {
+        label: 'Orders',
+        value: 'order'
+      },
+      options: [
+        {
+          label: 'Orders',
+          value: 'order'
+        },
+        {
+          label: 'Ticket Levels',
+          value: 'ticket_level'
+        },
+        {
+          label: 'Tickets',
+          value: 'ticket'
+        },
+        // {
+        //   label: 'Data',
+        //   value: 'data'
+        // },
+      ]
     }
   },
   methods: {
+    getLink(){
+      return `http://${location.host}/event/ticket/${this.$route.params.id}`
+    },
+    copyLink(){
+      const link = this.getLink()
+      navigator.clipboard.writeText(link);
+      this.$toast.show('Link copied')
+      console.log(link)
+    },
     async createTicketLevel() {
       this.$widget.openLoading()
       this.ticketLevel.event_id = this.$route.params.id
@@ -282,10 +352,10 @@ export default {
       const msg = this.$widget.getValidationError(res.data.errorMessage)
       this.$toast.error(msg ?? 'Ticket Level could not be updated')
     },
-    update() {
-      this.$store.dispatch('getSingleEventService', this.$route.params.id)
-    },
     toggleTicketLevel(ticketLevel) {
+      if(this.$store.state.ticket_levels.filter((e => e.is_available)).length == 1){
+        this.$toast.push("One Ticket level must be active")
+      }
       this.updateTicketLevelService({
         id: ticketLevel.id,
         data: {
@@ -354,14 +424,55 @@ export default {
       this.updateDisc = disc
       this.$widget.scrollTo('discountForm')
     },
+    async deleteEvent() {
+      const con = confirm("This cannot be undone, Are you sure you want to delete?")
+
+      if (!con)
+        return
+
+      this.$widget.openLoading()
+      const res = await this.deleteEventService(this.$route.params.id)
+      if (res.success) {
+        this.$toast.success("Event has been successfully deleted")
+      }
+      else
+        this.$toast.error(res.data.error ?? "Event Could not be deleted")
+      this.$widget.dismiss()
+
+      this.$router.push('/events/user')
+    },
+    async publishEvent() {
+      if (!this.$store.state.event.ticket_levels?.[0]) {
+        this.$toast.error("Cannot Publish event without a ticket level")
+        return;
+      }
+      this.$widget.openLoading()
+      let is_publish = this.$store.state.event.is_publish == 1 ? 0 : 1
+
+      const data = new FormData()
+      data.append("is_publish", is_publish)
+
+      await this.updateEventService({
+        id: this.$route.params.id,
+        data
+      })
+      console.log(is_publish)
+      this.$widget.dismiss()
+    },
+    update() {
+      this.$store.dispatch('getSingleEventService', this.$route.params.id)
+      this.$store.dispatch('getTicketLevelService', this.$route.params.id)
+    },
     ...mapActions([
       "createTicketLevelService", "updateTicketLevelService", "updateDiscountService", "createDiscountService",
-      "deleteDiscountService", "deleteTicketLevelService"
+      "deleteDiscountService", "deleteTicketLevelService", "deleteEventService", "updateEventService"
     ])
   },
   async created() {
     await this.$store.dispatch('getSingleEventService', this.$route.params.id)
-    console.log(this.$store.state.event.discounts)
+    await this.$store.dispatch('getTicketLevelService', this.$route.params.id)
+    await this.$store.dispatch('getTicketsService', this.$route.params.id)
+    await this.$store.dispatch('getOrderSummaryService', this.$route.params.id)
   }
 }
 </script>
@@ -382,4 +493,28 @@ export default {
 .p-checkbox {
   .border;
   .shadow-none;
-}</style>
+}
+</style>
+
+<style>
+.p-button.p-component {
+  margin-right: 10px;
+  border-radius: 7px;
+  background-color: whitesmoke;
+  color: var(--bs-blue);
+
+  border: none;
+}
+
+.p-button-label {
+  font-size: 12px;
+}
+
+.p-button.p-component.p-highlight,
+.p-button.p-component.p-highlight:hover {
+  background-color: var(--bs-warning) !important;
+  color: white;
+  font-family: Poppins-Bold;
+  box-shadow: none;
+}
+</style>

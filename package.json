@@ -12,6 +12,7 @@
     "@meforma/vue-toaster": "^1.3.0",
     "axios": "^1.6.2",
     "chart.js": "^4.4.0",
+    "idle-vue": "^2.0.5",
     "konva": "^9.2.3",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",

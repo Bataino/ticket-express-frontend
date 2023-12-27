@@ -72,13 +72,14 @@
             <div class="p-1 me-2 position-relative rounded-7 overflow-hidden w-fit" v-for="(file, index) in event.files"
               style="max-width: 160px;height: 200px;">
               <img class="w-100 rounded-7 object-fit-cover" :src="file" />
-              <icon icon="icons8:cancel" class="fs-2 pe-point text-danger position-absolute top-0 start-0" v-if="index > 0" @click="deleteImage(index)" />
+              <icon icon="icons8:cancel" class="fs-2 pe-point text-danger position-absolute top-0 start-0"
+                v-if="event.files?.length > 1  || files.length > 0" @click="deleteImage(index)" />
             </div>
             <div class="p-1 me-2 position-relative rounded-7 overflow-hidden w-fit" v-for="(file, index) in files"
               style="max-width: 160px;height: 200px;">
               <img class="w-100 rounded-7 object-fit-cover" :src="getUrl(file)" />
               <icon icon="icons8:cancel" class="fs-2 pe-point text-danger position-absolute top-0 start-0"
-                @click="files.splice(index, 1)" />
+                @click="files.splice(index, 1)"  v-if="event.files?.length > 0 || files.length > 1" />
             </div>
             <input type="file" multiple ref="files" accept="images/*" id="files" hidden @change="updateFiles" />
           </div>
@@ -129,51 +130,66 @@ export default {
       formdata.append("description", this.event.description)
       formdata.append("start", this.event.start)
       formdata.append("end", this.event.end)
-      formdata.append("venue_id", this.event.venue_id)
+      formdata.append("venue_id", this.venue.id)
       formdata.append("time_zone", this.event.time_zone)
 
       this.files.forEach((file) => formdata.append("files[]", file));
-      this.event.files.forEach((file) => formdata.append("files[]", file));
+      // this.event.files.forEach((file) => formdata.append("files[]", file));
 
       return formdata
     },
     async updateEvent() {
       console.log(Object.keys(this.event).length)
-      if (Object.keys(this.event).length < 6 || !this.files[0]) {
+      if (Object.keys(this.event).length < 6) {
         this.$toast.error("All fields are required")
         return
       }
 
       const data = this.getFormData()
       this.$widget.openLoading()
-      const res = await this.$store.dispatch('updateEventService', {data, id:this.event.id})
+      const res = await this.$store.dispatch('updateEventService', { data, id: this.event.id })
       this.$widget.dismiss()
 
-      console.log("Response",res.success)
+      // console.log("Response", res.success)
       if (res.success) {
         this.$toast.success('Event has been successfully updated')
         location. href = '/event/'+ this.event.id
         // this.$router.push('/event/'+ this.event.id)
         return
       }
-      this.$toast.error("Could not update event")
+      const error = this.$widget.getValidationError(res.errorMessage, "Could not update event")
+      this.$toast.error(error)
     },
     getUrl(file) {
       return URL.createObjectURL(file)
     },
     updateFiles() {
+      const isNotImage = Array.from(this.$refs.files.files).find((e) => !e.type.includes("image"))
+      const isBig =  Array.from(this.$refs.files.files).find((e) => e.size > 2097152)
+
+      if (isBig) {
+        this.$toast.error("File size must not exceed 2MB")
+        return
+      }
+
+      if (isNotImage) {
+        this.$toast.error("File type must be image")
+        return
+      }
       this.files.push(...this.$refs.files.files)
-      this.$refs.files.files = new FileList()
+      this.$refs.files.value = null
     },
     deleteImage(index) {
       this.event.files.splice(index, 1)
-      this.$store.dispatch('deleteImageService', {index:this.$route.params.id, id:this.event.id})
+      this.$store.dispatch('deleteImageService', { index: this.$route.params.id, id: this.event.id })
     }
   },
   watch: {
-    venue(venue) {
-      this.event.venue_id = venue.id
-      console.log(this.venue)
+    venue: {
+      immediate: false,
+      handler(venue) {
+        // console.log(this.venue)
+      }
     },
   },
   async created() {
@@ -183,11 +199,8 @@ export default {
 
     this.event.start = new Date(this.event.start)
     this.event.end = new Date(this.event.end)
-    this.venue = this.event.venue
-
-    // console.log(this.venue)
-    // console.log(this.event)
-    // console.log(moment.tz.zones())
+    this.venue = this.$store.state.venues.filter((e) => e.id == this.event.venue_id)[0]
+    console.log(this.venue)
   }
 }
 </script>

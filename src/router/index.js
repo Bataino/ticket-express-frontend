@@ -20,8 +20,8 @@ const routes = [
   },
   {
     path: '/views',
-    component:  () => import('@/views/Views.vue')
-    
+    component: () => import('@/views/Views.vue')
+
   },
   {
     path: '/login',
@@ -60,6 +60,25 @@ const routes = [
     }
   },
   {
+    path: '/event/ticket/:id',
+    component: function () {
+      return import('@/views/event/OrderTickets.vue')
+    }
+  },
+  {
+    path: '/event/ticket/:id/:event_name',
+    name: 'order_ticket',
+    component: function () {
+      return import('@/views/event/OrderTickets.vue')
+    }
+  },
+  {
+    path: '/order/completed',
+    component: function () {
+      return import('@/views/event/OrderCompleted.vue')
+    }
+  },
+  {
     path: '/orders',
     name: 'orders',
     component: function () {
@@ -81,7 +100,7 @@ const routes = [
     }
   },
   {
-    path: '/campaign/id',
+    path: '/campaign/:id',
     name: 'campaign_details',
     component: function () {
       return import('@/views/campaign/CampaignDetails.vue')
@@ -102,7 +121,7 @@ const routes = [
     }
   },
   {
-    path: '/venue/edit/id',
+    path: '/venue/edit/:id',
     name: 'edit_venue',
     component: function () {
       return import('@/views/venue/EditVenue.vue')
@@ -115,7 +134,14 @@ const routes = [
       return import('@/views/profile/Profile.vue')
     }
   },
-  
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: function () {
+      return import('@/views/DashBoard.vue')
+    }
+  },
+
 ]
 
 const router = createRouter({
@@ -123,21 +149,21 @@ const router = createRouter({
   routes
 })
 
-const protected_routes = ["profile",  "home", "edit_venue", "venues",  "add_event", "user_event",
-  "add_venue", "campaign_details", "campaigns","orders", "event_orders", "event_details", "edit_event"
+const protected_routes = ["profile", "dashboard", "edit_venue", "venues", "add_event", "user_event",
+  "add_venue", "campaign_details", "campaigns", "orders", "event_orders", "event_details", "edit_event"
 ];
 
 const auth_routes = ["login", "signup"];
 
 router.beforeEach((to, from) => {
-  if(protected_routes.includes(to.name) && !store.getters.token){
+  if (protected_routes.includes(to.name) && !store.getters.token) {
     return {
-      name:'login'
+      name: 'login'
     }
   }
-  else if(auth_routes.includes(to.name) && store.getters.token){
+  else if (auth_routes.includes(to.name) && store.getters.token) {
     return {
-      name:'home'
+      name: 'dashboard'
     }
   }
 })

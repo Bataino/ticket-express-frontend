@@ -14,17 +14,34 @@ export default {
             return res.response
         return res.data
     },
+    async getTicketLevelService({ commit }, id) {
+        const res = await http.get('level/'+ id)
+        if (res.response)
+            return res.response
+
+        commit("update", ["ticket_levels", res.data.data])
+        return res.data
+    },
+
     async deleteTicketLevelService({ commit }, id) {
-        const res = await http.delete('level/'+id)
+        const res = await http.delete('level/' + id)
         if (res.response)
             return res.response
         return res.data
     },
-    async updateTicketLevelService({ commit }, {data, id}) {
-        const res = await http.put('level/'+id, data)
+    async updateTicketLevelService({ commit }, { data, id }) {
+        const res = await http.put('level/' + id, data)
         if (res.response)
             return res.response
         return res.data
     },
-    
+    async getTicketsService({ commit }, id) {
+        const res = await http.get('ticket/event/' + id)
+        if (res.response)
+            return res.response
+
+        commit("update", ["tickets", res.data.data])
+        return res.data
+    }
+
 }

@@ -4,7 +4,7 @@
     <div class="p-3">
       <div class="mb-4 mt-2">
         <span class="bold text-primary h3">Campaigns</span>
-        <button class="btn border text-primary bold float-end p-2 rounded-7 btn-sm ">Create Campaign</button>
+        <router-link to="/campaign/add" class="btn border text-primary bold float-end p-2 rounded-7 btn-sm ">Create Campaign</router-link>
       </div>
       <div>
         <div class="py-3 ps-3 d-flex align-items-center rounded-7 bg-whitesmoke mt-2" v-for="x in [1, 2, 3, 4, 5, 6]"
@@ -29,11 +29,6 @@
 </template>
 
 <script setup>
-import InputText from "primevue/inputtext";
-import Card from "primevue/card"
-import Calendar from "primevue/calendar"
-import FileUpload from "primevue/fileupload"
-import Dropdown from 'primevue/dropdown';
 
 </script>
 

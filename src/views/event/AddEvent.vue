@@ -1,9 +1,9 @@
 <template>
   <div class="">
     <te-header></te-header>
-    <form class="p-3" @submit.prevent="createEvent">
-      <h3 class="bold text-primary mb-3">Create New Event</h3>
-      <div class="row">
+    <form class="p-3" @submit.prevent="createEvent" _style="max-width:99vw;">
+      <!-- <h4 class="bold text-primary mb-3 mt-2">Create New Event</h4> -->
+      <div class="row overflow-hidden" style="overflow:hidden">
         <div class="col-12 col-md-6">
           <div>
             <label class="fw-bold mb-1">
@@ -26,7 +26,8 @@
             <label class="fw-bold mb-1">
               Start date
             </label>
-            <Calendar v-model="event.start" placeholder="starting period of the event" :min-date="new Date()" showTime class="mb-3 rounded-7 w-100">
+            <Calendar v-model="event.start" placeholder="starting period of the event" :min-date="new Date()" showTime
+              class="mb-3 rounded-7 w-100">
             </Calendar>
           </div>
         </div>
@@ -35,7 +36,8 @@
             <label class="fw-bold mb-1">
               End date
             </label>
-            <Calendar v-model="event.end" placeholder="end time of the event" showTime :min-date="event.start" class="rounded-7 w-100"></Calendar>
+            <Calendar v-model="event.end" placeholder="end time of the event" showTime :min-date="event.start"
+              class="rounded-7 w-100"></Calendar>
           </div>
         </div>
         <div class="col-12 col-md-6">
@@ -77,11 +79,11 @@
               <icon icon="icons8:cancel" class="fs-2 pe-point text-danger position-absolute top-0 start-0"
                 @click="files.splice(index, 1)" />
             </div>
-            <input type="file" multiple ref="files" accept="images/*" id="files" hidden @change="updateFiles" />
+            <input type="file" multiple ref="files" accept="image/*" id="files" hidden @change="updateFiles" />
           </div>
         </div>
       </div>
-      <button class="btn btn-primary mt-3 mb-4 w-100 w-lg-fit" type="submit">
+      <button class="btn btn-primary mt-3 mb-4 p-2 w-100 w-lg-fit" type="submit">
         Create Event
       </button>
     </form>
@@ -108,8 +110,8 @@ export default {
     const zones = moment.tz.names();
     return {
       event: {
-        title: "title",
-        description: "desctiption"
+        title: "",
+        description: ""
       },
       venue: {},
       files: [],
@@ -144,20 +146,33 @@ export default {
       const formdata = this.getFormData()
       this.$widget.openLoading()
       const res = await this.$store.dispatch('createEventService', formdata)
-      this.$widget.dismiss()
-      console.log(res.data,"DATA")
+      // console.log(res.data,"DATA")
       if (res.success) {
         this.$toast.success('Event has been successfully created')
-        this.$router.push('/event/user')
+        location.href = '/event/' + res.data.id
         return
       }
+      this.$widget.dismiss()
       this.$toast.error("Could not create event")
     },
     getUrl(file) {
       return URL.createObjectURL(file)
     },
     updateFiles() {
-      // console.log(this.$refs.files.files)
+      console.log(this.$refs.files.files)
+
+      const isNotImage = Array.from(this.$refs.files.files).find((e) => !e.type.includes("image"))
+      const isBig = Array.from(this.$refs.files.files).find((e) => e.size > 2097152)
+
+      if (isBig) {
+        this.$toast.error("File size must not exceed 2MB")
+        return
+      }
+      if (isNotImage) {
+        this.$toast.error("File type must be image")
+        return
+      }
+
       this.files.push(...this.$refs.files.files)
       // console.log(this.files, this.$refs.files.files)
       // this.$refs.files.files = []

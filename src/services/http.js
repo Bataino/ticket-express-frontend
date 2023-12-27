@@ -1,8 +1,10 @@
 import axios from "axios"
 import Widget from "@/functions/widget"
 import { createToaster } from "@meforma/vue-toaster";
-import store from "../store";
+import { useStore } from "vuex";
 
+const store = useStore()
+console.log(store)
 // import { useToast } from 'primevue/usetoast';
 
 let toast
@@ -10,12 +12,16 @@ toast = createToaster({
     position:'top-right',
     duration:3000
 });
-const url = import.meta.env.VUE_APP_API_URL || "http://127.0.0.1:8000/api/"
+
+let url = "https://tusboletosexpress.com/tk-api/public/api/"
+
+if (import.meta.env.MODE == 'development')
+    url = "http://127.0.0.1:8000/api/"
 
 const http = axios.create({
     baseURL: url,
     headers: {
-        "Authorization": "Bearer " + localStorage.getItem('token'),
+        "Authorization": "Bearer " +( store?.getters.token ?? localStorage.getItem("token")),
         accept: 'application/json',
         'Content-Type': 'application/json',
     },
