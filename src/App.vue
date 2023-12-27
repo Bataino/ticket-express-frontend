@@ -26,6 +26,7 @@ export default {
       console.log(duration.asMinutes())
       if(duration.asMinutes() > 10) {
         localStorage.clear()
+        
         location.href = "/login"
       } 
     }
