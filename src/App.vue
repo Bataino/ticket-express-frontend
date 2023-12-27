@@ -26,7 +26,7 @@ export default {
       console.log(duration.asMinutes())
       if(duration.asMinutes() > 10) {
         localStorage.clear()
-        this.$router.push("/login")
+        location.href = "/login"
       } 
     }
   },
