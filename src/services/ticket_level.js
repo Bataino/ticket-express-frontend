@@ -42,6 +42,13 @@ export default {
 
         commit("update", ["tickets", res.data.data])
         return res.data
+    },
+    async scanTicketService(id) {
+        const res = await http.post('ticket/scan/' + id)
+        if (res.response)
+            return res.response
+
+        return res.data
     }
 
 }

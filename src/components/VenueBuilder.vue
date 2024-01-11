@@ -2,15 +2,15 @@
 <template>
     <div :class="class" :style="style" class="w-100">
         <div class="w-fit">
-            <v-stage :config="stageConfig" @mousedown="handleStageMouseDown" @touchstart="handleStageMouseDown" ref="stage">
+            <v-stage :config="stageConfig" disabled @mousedown="handleStageMouseDown" @touchstart="handleStageMouseDown" ref="stage">
                 <v-layer ref="layer">
 
-                    <component v-for="(shape, index) in shapes" :key="index" :is="shape.type" v-bind="shape.attrs"
+                    <component v-for="(shape, index) in shapes" :key="index" :is="shape.type" v-bind="{...shape.attrs, draggable: !disabled}"
                         @transformend="handleTransformEnd" @dragend="handleDragEnd">
                         <v-rect v-if="shape.seats" v-for="(seat, index) in shape.seats"
                             v-bind="{ width: 10, height: 10, name: `chair${index}-${shape.attrs.name}`, x: seat.x, y: seat.y, fill: shape.attrs.fill }" />
                     </component>
-                    <v-transformer ref="transformer" />
+                    <v-transformer v-if="!disabled" ref="transformer" />
                     <!-- </v-group> -->
 
                     <!-- Render seats -->
@@ -20,30 +20,34 @@
                 </v-layer>
             </v-stage>
 
-            <div class="d-flex align-items-center">
-                <!-- <h2>Shapes</h2> -->
-                <button type="button" class="p-3 border-0 m-2 rounded-circle bg-dark" @click="addCircle"></button>
-                <button type="button" class="p-3 border-0 me-2 bg-dark" @click="addSquare"></button>
-                <!-- <button type="button" @click="addDoughnut">Add Doughnut</button>
+            <div v-if="!disabled">
+                <div class="d-flex align-items-center">
+                    <!-- <h2>Shapes</h2> -->
+                    <button type="button" class="p-3 border-0 m-2 rounded-circle bg-dark" @click="addCircle"></button>
+                    <button type="button" class="p-3 border-0 me-2 bg-dark" @click="addSquare"></button>
+                    <!-- <button type="button" @click="addDoughnut">Add Doughnut</button>
                 <button type="button" @click="addPolygon">Add Polygon</button>
                 <button type="button" @click="addTriangle">Add Triangle</button> -->
-                <button type="button" class="p-3 border-0 me-2 bg-dark" @click="addText">
-                    Add text
-                </button>
-                <button type="button" @click="moveUp" class="border-0 bg-transparent">
-                    <icon icon="gis:layer-upload" class="fs-2" />
-                </button>
-                <button type="button" class="border-0 bg-transparent" @click="moveDown">
-                    <icon icon="gis:layer-upload" :rotate="2" class="fs-2" />
-                </button>
-                <button type="button" class="border-0 bg-transparent">
-                    <color-picker v-model="color" @change="changeColour" :disabled="!selectedShape?.attrs" format="hex" />
-                </button>
-            </div>
+                    <button type="button" class="p-3 border-0 me-2 bg-dark" @click="addText">
+                        Add text
+                    </button>
+                    <button type="button" @click="moveUp" class="border-0 bg-transparent">
+                        <icon icon="gis:layer-upload" class="fs-2" />
+                    </button>
+                    <button type="button" class="border-0 bg-transparent" @click="moveDown">
+                        <icon icon="gis:layer-upload" :rotate="2" class="fs-2" />
+                    </button>
+                    <button type="button" class="border-0 bg-transparent">
+                        <color-picker v-model="color" @change="changeColour" :disabled="!selectedShape?.attrs"
+                            format="hex" />
+                    </button>
+                </div>
 
-            <div class="pb-3">
-                <!-- <span class="bold">Seats</span><br> -->
-                <button type="button" class="btn small p-1 bg-lightgray bold" @click="isAddSeat = true">Add Seat</button>
+                <div class="pb-3">
+                    <!-- <span class="bold">Seats</span><br> -->
+                    <button type="button" class="btn small p-1 bg-lightgray bold" @click="isAddSeat = true">Add
+                        Seat</button>
+                </div>
             </div>
         </div>
         <div>
@@ -83,7 +87,7 @@ import ColorPicker from "primevue/colorpicker"
 
 export default {
     name: "VenueBuiler",
-    props: ['class', 'style'],
+    props: ['class', 'style', "modelValue", "disabled"],
     components: {
     },
     data() {
@@ -308,14 +312,47 @@ export default {
             this.selectedShape.attrs.fill = '#' + e.value
             console.log(e)
 
+        },
+        loadStage() {
+            if (this.modelValue) {
+                try {
+                    this.shapes = JSON.parse(this.modelValue)
+                }
+                catch (e) { }
+                return
+            }
+
+            try {
+                const id = this.$route.params.id
+                // console.log("IDD", id)
+                if (id) {
+                    // console.log(localStorage.getItem("venue_" + id))
+                    this.shapes = JSON.parse(localStorage.getItem("venue_" + id) ?? "") ?? []
+                    return;
+                }
+                this.shapes = JSON.parse(localStorage.getItem("venue_add")) ?? []
+            }
+            catch (e) {
+                console.log(e)
+            }
+        },
+        handleInput() {
+            // this.$emit('input', JSON.stringify(this.shapes))
         }
     },
     watch: {
         shapes: {
-            immediate: true,
+            immediate: false,
             deep: true,
             handler(c) {
-                console.log("Shape Vef", c)
+                this.$emit('update:modelValue', JSON.stringify(this.shapes))
+                let name = "venue_add"
+
+                if (this.$route.params.id) {
+                    name = "venue_" + this.$route.params.id
+                }
+
+                localStorage.setItem(name, JSON.stringify(this.shapes))
             }
         },
         seatGroups: {
@@ -329,6 +366,10 @@ export default {
             this.selectedShape = this.getSelectedShape()
             this.color = this.selectedShape?.attrs?.fill.replace("#", "")
         }
+    },
+    created() {
+        this.loadStage()
+        this.$emit('update:modelValue', JSON.stringify(this.shapes))
     }
 };
 </script>

@@ -23,7 +23,7 @@
       </div>
 
       <div class="pt-5">
-        <div class="text-primary fw-bold btn mb-2 bg-whitesmoke">
+        <div class="text-primary fw-bold btn mb-2 bg-whitesmoke" @click="showArrangement = true">
           View seat arrangements
         </div><br>
         <span class="">
@@ -77,6 +77,10 @@
         </div>
       </div>
     </form>
+
+    <Dialog v-model:visible="showArrangement" class="w-100 w-lg-75 mx-5">
+      <venue-builder :disabled="true" v-model="$store.state.event.venue.venue_setting"></venue-builder>
+    </Dialog>
   </div>
 </template>
 
@@ -85,6 +89,8 @@ import InputNumber from "primevue/inputnumber";
 import Carousel from "primevue/carousel"
 import Image from 'primevue/image';
 import ConfirmPopup from 'primevue/confirmpopup';
+import Dialog from "primevue/dialog"
+import VenueBuilder from "@/components/VenueBuilder.vue";
 
 </script>
 
@@ -109,7 +115,8 @@ export default {
       user: {},
       items: {
 
-      }
+      },
+      showArrangement: false
     }
   },
   computed: {
@@ -146,6 +153,7 @@ export default {
   async created() {
     await this.$store.dispatch('getSingleEventService', this.$route.params.id)
     await this.$store.dispatch('getTicketLevelService', this.$route.params.id)
+    // await this.$store.dispatch('getTicketLevelService', this.$route.params.id)
   }
 }
 </script>

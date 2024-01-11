@@ -47,7 +47,7 @@
           </label>
         </div>
         <div class="bg-whitesmoke mt-2 mx-2 rounded-7" v-if="showCanvas">
-          <venue-builder class="" style="min-height: 300px;"></venue-builder>
+          <venue-builder v-model="venue.setting" class="" style="min-height: 300px;"></venue-builder>
         </div>
       </div>
       <button class="btn btn-sm small btn-primary mt-5 p-3 p-md-2 mb-4 w-100 w-lg-fit" :disabled="!formValidate" type="submit">
@@ -91,6 +91,8 @@ export default {
   },
   methods: {
     async createVenue() {
+      // console.log(this.venue)
+      // return;
       if (!this.formValidate) {
         this.$toast.show("Fill all Required Inputs")
         return

@@ -53,6 +53,20 @@ export default class Widget {
         const element = document.getElementById(elementId);
         element.scrollIntoView(true);
     }
+    static playBuzz() {
+        var audio = document.createElement("audio")
+        document.body.appendChild(audio);
+        audio.src = new URL('../assets/buzz.mp3', import.meta.url).href
+        console.log(audio)
+        audio.play()
+    }
+    static playBlimp() {
+        var audio = document.createElement("audio")
+        document.body.appendChild(audio);
+        audio.src = new URL('../assets/blimmp.mp3', import.meta.url).href
+        console.log(audio)
+        audio.play()
+    }
 }
 
 

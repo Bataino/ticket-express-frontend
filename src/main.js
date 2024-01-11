@@ -41,7 +41,8 @@ const app = createApp(App)
 
 app.config.globalProperties.$widget = Widget
 app.config.globalProperties.$te = {
-    currency:"$"
+    currency:"$",
+    scanApp:"http://127.0.0.1:5174/app/"
 }
 
 

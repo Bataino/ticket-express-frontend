@@ -7,7 +7,7 @@
       </div>
       <div class="d-flex flex-wrap justify-content-start justify-content-md-start mw-100 p-2 mt-3">
         <div class="col-12 col-md-6" v-for="venue in $store.state.venues">
-          <card class="m-2 me-3 border shadow-sm">
+          <card class="m-2 me-3 pe-point border shadow-sm" @click="$router.push('/venue/edit/'+ venue.id)">
             <template #title> 
               <div class="h6 bold text-muted">
                 {{ venue.title}} 

@@ -10,9 +10,15 @@
 <script>
 import moment from "moment"
 
+
 export default {
   methods: {
     autoLogout() {
+      let SESSION = 10
+      // console.log(import.meta.env.MODE)
+      if(import.meta.env.MODE == 'development')
+        SESSION = 100
+
       if (this.$store.getters.token && !localStorage.getItem('timeLogin')) {
         localStorage.setItem("timeLogin", new Date())
         return
@@ -24,7 +30,7 @@ export default {
       let duration = moment.duration(now.diff(loginTime))
 
       console.log(duration.asMinutes())
-      if(duration.asMinutes() > 10) {
+      if(duration.asMinutes() > SESSION) {
         localStorage.clear()
         
         location.href = "/login"

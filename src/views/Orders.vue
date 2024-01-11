@@ -231,13 +231,6 @@ export default {
 		await this.getOrdersService({ event_id: this.$route.params.event_id })
 		this.getOrderSummary()
 
-		this.lazyParams = {
-			first: this.$refs.dt.first,
-			rows: this.$refs.dt.rows,
-			sortField: null,
-			sortOrder: null,
-			filters: this.filters
-		};
 
 		// this.loadLazyData();
 	}
