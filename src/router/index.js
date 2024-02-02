@@ -141,7 +141,20 @@ const routes = [
       return import('@/views/DashBoard.vue')
     }
   },
-
+  {
+    path: '/scan/:event_id',
+    name: 'scan',
+    component: function () {
+      return import('@/views/scan/ScanPage.vue')
+    }
+  },
+  // {
+  //   path: '/scan/completed',
+  //   name: 'scan_completed',
+  //   component: function () {
+  //     return import('@/views/scan/TicketScanned.vue')
+  //   }
+  // },
 ]
 
 const router = createRouter({

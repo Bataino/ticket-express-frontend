@@ -2,73 +2,94 @@
   <div class="">
     <te-header></te-header>
     <form class="p-3" @submit.prevent="createEvent" _style="max-width:99vw;">
-      <!-- <h4 class="bold text-primary mb-3 mt-2">Create New Event</h4> -->
+      <h4 class="mb-3 mt-2 fw-bold small">
+        Create Page
+      </h4>
       <div class="row overflow-hidden" style="overflow:hidden">
         <div class="col-12 col-md-6">
           <div>
-            <label class="fw-bold mb-1">
-              Title
+            <label class="fw-bold small mb-1">
+              Event Name
             </label>
-            <input placeholder="Le ccusa" autocomplete v-model="event.title" class="p-2 border rounded-7 w-100 mb-3" />
+            <input placeholder="Enter name" autocomplete v-model="event.title" class="p-2 border rounded-7 w-100 mb-3" />
           </div>
         </div>
         <div class="col-12 col-md-6">
           <div>
-            <label class="fw-bold mb-1">
+            <label class="fw-bold small mb-1">
               Description
             </label>
-            <textarea v-model="event.description" autocomplete placeholder="A description about the event"
-              class="p-2 border rounded-7 w-100 mb-3" style="min-height: 100px;"></textarea>
+            <textarea v-model="event.description" autocomplete placeholder="Enter Description"
+              class="p-3 border rounded-7 w-100 mb-3" style="min-height: 100px;"></textarea>
           </div>
         </div>
         <div class="col-12 col-md-6">
           <div>
-            <label class="fw-bold mb-1">
+            <label class="fw-bold small mb-1">
               Start date
             </label>
-            <Calendar v-model="event.start" placeholder="starting period of the event" :min-date="new Date()" showTime
+            <Calendar v-model="event.start" placeholder="Select Date" :min-date="new Date()" hideOnDateTimeSelect
               class="mb-3 rounded-7 w-100">
             </Calendar>
           </div>
         </div>
         <div class="col-12 col-md-6">
+          <div>
+            <label class="fw-bold small mb-1">
+              Start Time
+            </label>
+            <Calendar v-model="event.start" placeholder="Select Time" :min-date="new Date()" timeOnly stepMinute="15" hideOnDateTimeSelect
+              class="mb-3 rounded-7 w-100">
+            </Calendar>
+          </div>
+        </div>
+        <!-- <div class="col-12 col-md-6">
           <div class="mb-3">
-            <label class="fw-bold mb-1">
+            <label class="fw-bold small mb-1">
               End date
             </label>
             <Calendar v-model="event.end" placeholder="end time of the event" showTime :min-date="event.start"
               class="rounded-7 w-100"></Calendar>
           </div>
-        </div>
+        </div> -->
         <div class="col-12 col-md-6">
           <div class="mb-3">
-            <label class="fw-bold mb-1">
+            <label class="fw-bold small mb-1">
+              Estimated Number of attendees
+            </label>
+            <Dropdown v-model="event.attendees" :options="attendees" placeholder="Select number"
+              class="w-100 mb-1" />
+          </div>
+        </div>
+        <!-- <div class="col-12 col-md-6">
+          <div class="mb-3">
+            <label class="fw-bold small mb-1">
               Add Venue
             </label>
             <Dropdown v-model="venue" :options="$store.state.venues" optionLabel="title" placeholder="Select a Venue"
               class="w-100 mb-1" />
-            <router-link class="text-primary fw-bold pe-point w-fit" to="/venue/add">
+            <router-link class="text-primary fw-bold small pe-point w-fit" to="/venue/add">
               <icon icon="solar:home-add-broken" class="my-auto" />
               <span class="pe-point small">
                 create new venue
               </span>
             </router-link>
           </div>
-        </div>
+        </div> -->
         <div class="col-12 col-md-6">
           <div class="mb-3">
-            <label class="fw-bold mb-1">
+            <label class="fw-bold small mb-1">
               Select Timezone
             </label>
-            <Dropdown v-model="event.time_zone" :options="zones" filter optionLabel="" placeholder="Select a TimeZone"
+            <Dropdown v-model="event.time_zone" :options='["EST", "PST"]' placeholder="Select a TimeZone"
               class="w-100 mb-1">
             </Dropdown>
           </div>
         </div>
         <div class="col-12 col-md-12">
           <div class="mb-3 d-flex flex-wrap">
-            <div class="fw-bold mb-1 w-100">Add files</div><br>
-            <label class="fw-bold mb-1" for="files">
+            <div class="fw-bold small mb-1 w-100">Add files</div><br>
+            <label class="fw-bold small mb-1" for="files">
               <div class="py-4 px-3 bg-primary rounded-7">
                 <icon icon="mingcute:add-fill" class="fs-1 text-white" />
               </div>
@@ -115,6 +136,7 @@ export default {
       },
       venue: {},
       files: [],
+      attendees:["Less than 250","251 to 500", "501 to 1,000", "1,001 to 5,0001", "5,0001 to 10,000", "10,0000+"],
       zones
     }
   },
@@ -129,16 +151,23 @@ export default {
       formdata.append("description", this.event.description)
       formdata.append("start", this.event.start)
       formdata.append("end", this.event.end)
-      formdata.append("venue_id", this.event.venue_id)
+      formdata.append("attendees", this.event.attendees)
+      // formdata.append("venue_id", this.event.venue_id)
       formdata.append("time_zone", this.event.time_zone)
 
       this.files.forEach((file) => formdata.append("files[]", file));
 
       return formdata
     },
+    isValidated(){
+      const { event } = this
+      const { description, title, start, time_zone, attendees } = event
+
+      return title && description && start && time_zone && attendees
+    },
     async createEvent() {
       console.log(Object.keys(this.event).length)
-      if (Object.keys(this.event).length < 6 || !this.files[0]) {
+      if (!this.isValidated() || !this.files[0]) {
         this.$toast.error("All fields are required")
         return
       }

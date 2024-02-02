@@ -25,7 +25,7 @@
                 </div>
                 <span class="align-items-center ps-5 d-none d-md-flex">
                     <router-link to="/dashboard" class="me-3 ">DashBoard</router-link>
-                    <router-link to="/events/user" class="me-3">Events</router-link>
+                    <router-link to="/events/user" class="me-3">Pages</router-link>
                     <!-- <router-link to="/campaigns" class="me-3">Campaigns</router-link> -->
                     <!-- <router-link to="/policy" class="me-3">Policy & Refunds</router-link> -->
                     <router-link to="/venues" class="">Venues</router-link>
@@ -51,7 +51,7 @@
         <side-bar v-model:visible="visible">
             <div class="px-5">
                 <router-link to="/dashboard" class="me-3 ">DashBoard</router-link><br><br>
-                <router-link to="/events/user" class="me-3 mb-4">Events</router-link><br><br>
+                <router-link to="/events/user" class="me-3 mb-4">Pages</router-link><br><br>
                 <!-- <router-link to="/orders" class="me-3 mb-4">Orders</router-link><br><br> -->
                 <!-- <router-link to="/campaigns" class="me-3 mb-4">Campaigns</router-link><br><br> -->
                 <!-- <router-link to="/policy" class="me-3 mb-4">Policy & Refunds</router-link><br><br> -->

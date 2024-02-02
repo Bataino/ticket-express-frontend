@@ -28,7 +28,7 @@
                     </button>
                 </form>
             </div>
-            <div class="p-2 d-none d-md-block">
+            <div class="p-2 w-100 d-none d-md-block">
                 <div class="w-100 my-5">
                     <img src="https://www.shutterstock.com/image-illustration/3d-young-man-marker-checking-260nw-2329113415.jpg"
                         class="w-100" />

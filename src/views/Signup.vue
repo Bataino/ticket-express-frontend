@@ -4,42 +4,51 @@
         <div class="d-flex p-4 pt-5">
             <div class="col-12 col-md-6 text-start">
                 <h5 class="text-primary bold">SignUp</h5>
-                <form class="text-start py-4" @submit.prevent="signup">
+                <form class="text-start py-4 me-2" @submit.prevent="signup">
                     <div class="row">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 ">
                             <div class="">
-                                <label class="small fw-bold">First Name</label>
+                                <label class="small fw-bold">Name</label>
                                 <pv-inputtext required v-model="user.first_name" :class="inputClass"
-                                    placeholder="John"></pv-inputtext>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="">
-                                <label class="small fw-bold">Last Name</label>
+                                    placeholder="First name"></pv-inputtext>
                                 <pv-inputtext required v-model="user.last_name" :class="inputClass"
-                                    placeholder="Doe"></pv-inputtext>
+                                    placeholder="Last Name"></pv-inputtext>
                             </div>
                         </div>
                     </div>
                     <div class="">
                         <label class="small fw-bold">Email address</label>
                         <pv-inputtext :class="inputClass" v-model="user.email" type="email"
-                            placeholder="jhonedoe@email.com"></pv-inputtext>
+                            placeholder="Enter email"></pv-inputtext>
+                    </div>
+                    <div class="">
+                        <label class="small fw-bold">Organization/Company Name</label>
+                        <pv-inputtext :class="inputClass" v-model="user.company" type=""
+                            placeholder="Organization or Company Name"></pv-inputtext>
                     </div>
                     <div class="">
                         <label class="small fw-bold">Phone Number</label>
-                        <input type="tel" inputmode="numeric" :class="inputClass" v-model="user.phone" placeholder="+23470229933"
-                            required>
+                        <input type="tel" inputmode="numeric" :class="inputClass" v-model="user.phone"
+                            placeholder="Enter number" required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="mb-3">
+                            <label class="fw-bold mb-1">
+                                Estimated Number of attendees
+                            </label>
+                            <Dropdown v-model="user.attendees" :class="inputClass" :options="$store.state.attendees" placeholder="Select number"
+                                class="w-100" />
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12">
                             <div class="">
                                 <label class="small fw-bold">Password</label><br>
-                                <password class="mb-3 mt-1" v-model="user.password" placeholder="****" required
+                                <password class="mb-3" v-model="user.password" placeholder="****" required
                                     toggleMask />
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <!-- <div class="col-12 col-md-6">
                             <div class="">
                                 <label class="small fw-bold">Confirm Password</label><br>
                                 <password class=" mt-1" v-model="user.password_confirmation" placeholder="****"
@@ -48,7 +57,7 @@
                                     Password does not match!
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="text-center small py-3">
                         Already have an account? <a href="/login" class="text-primary">Login</a>
@@ -56,7 +65,8 @@
                     <div class="text-danger text-center small mt-1 mb-3 bold" v-if="error">
                         {{ error }}
                     </div>
-                    <button type="submit" :disabled="!vefComplete" class="rounded-7 border-0 fw-bold mt-2 btn-primary w-100 p-3 shadow-md">
+                    <button type="submit" :disabled="!vefComplete"
+                        class="rounded-7 border-0 fw-bold mt-2 btn-primary w-100 p-3 shadow-md">
                         Get started
                     </button>
                 </form>
@@ -65,7 +75,7 @@
                 <div class="w-100 my-5">
                     <img src="@assets/images/events.jpg" class="w-100" />
                     <div class="float-end mt-4 bold text-primary">
-                       Event Hosting Got Easier!
+                        Event Hosting Got Easier!
                     </div>
                 </div>
             </div>
@@ -75,16 +85,20 @@
 
 <script setup>
 import Password from 'primevue/password';
+import Dropdown from 'primevue/dropdown';
+
 </script>
 
 <script>
 export default {
     computed: {
         passwordMatch() {
-            return this.user.password && this.user.password == this.user.password_confirmation
+            return true
+            // return this.user.password && this.user.password == this.user.password_confirmation
         },
         vefComplete() {
-            const vefComplete = this.passwordMatch && Object.values(this.user).length == 6
+
+            const vefComplete = Object.values(this.user).length == 7
             if (vefComplete)
                 return true
             else
@@ -131,4 +145,5 @@ input {
 .p-component.p-password,
 .p-password-input {
     width: 100% !important;
-}</style>
+}
+</style>

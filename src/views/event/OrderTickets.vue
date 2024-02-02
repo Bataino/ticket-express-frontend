@@ -4,7 +4,7 @@
     <form @submit.prevent="createOrder" class="p-4">
       <div class="d-flex justify-content-between align-item-center flex-wrap flex-md-nowrap">
         <div class="fs-6 mt-2 mt-md-5">
-          {{ $store.state.event.venue.title }}<br>
+          {{ $store.state.event.venue?.title }}<br>
           <div class="bold h2 w-fit pt-1">{{ $store.state.event.title }}</div>
           <div class="mt-md-3 pt-md-1">
             <icon icon="lets-icons:date-today-duotone" class="fs-4 text-primary" />
@@ -31,7 +31,7 @@
         </span>
       </div>
 
-      <div class="border my-3 p-3 rounded-7">
+      <div class="border my-3 p-3 mt-5 rounded-7">
         <h5 class="bold">Tickets</h5>
         <div class="mt-3" v-for="tick in $store.state.ticket_levels">
           {{ tick.title }} : {{ $te.currency + tick.price }}<br>

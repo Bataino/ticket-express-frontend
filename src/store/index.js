@@ -9,6 +9,7 @@ import orderServices from "@/services/order"
 const store = createStore({
   state: {
     user: {},
+    attendees:["Less than 250","251 to 500", "501 to 1,000", "1,001 to 5,0001", "5,0001 to 10,000", "10,0000+"],
     token: null,
     events: [],
     tickets: [],

@@ -1,36 +1,43 @@
 <template>
   <div class="">
     <te-header></te-header>
-    <div class="py-2 pe-3 text-end bg-whitesmoke text-primary">
+    <div class="py-3 pe-3 text-end bg-whitesmoke text-primary">
       <!-- <span class=" text-secondary me-3" @click="deleteEvent">
         Delete
       </span> -->
-      <button class="pe-point bold me-3 border-0 bg-transparent text-primary" @click="copyLink" v-if="$store.state.event.is_publish == 1">
+      <button class="pe-point fw-bold me-3 border-0 bg-transparent text-primary" @click="copyLink" v-if="$store.state.event.is_publish == 1">
         Share
       </button>
       <a :href="getLink()" v-if="$store.state.event.ticket_levels?.[0]" class="pe-point bold me-3 border-0 bg-transparent text-dark">
         View
       </a>
-      <router-link :to="'/event/edit/' + $route.params.id" class="pe-point text-warning bold me-3">
+      <router-link :to="'/event/edit/' + $route.params.id" class="pe-point text-warning fw-bold me-3">
         Edit
       </router-link>
       <span class="" @click="publishEvent">
-        <span class="pe-point bold" v-if="$store.state.event.is_publish == 0">
-          Publish
+        <span class="pe-point bold btn btn-primary rounded-7 text-white" v-if="$store.state.event.is_publish == 0">
+          <small>
+            Publish
+          </small>
         </span>
-        <span class="pe-point text-muted" v-else>
-          Unpublish
-        </span>
+        <!-- <span class="pe-point btn btn-secondary rounded-7 text-white" v-else>
+          <small>
+            small
+          </small>
+        </span> -->
       </span>
     </div>
-    <div class="px-4 py-3 ">
+    <div class="px-4 py-3 mt-1 ">
 
-      <span class="bold text-primary h3">{{ $store.state.event.title }}</span>
+      <span class="bold text-primary h3">{{ $store.state.event.title }}</span><br>
+      <span class="small text-muted">
+        {{  $store.state.event.uuid }}
+      </span>
+      <!-- <icon icon="fa-brands:orcid" class="ms-2 fs-5 text-secondary mb-2" @click="copy" /> -->
       <div class="py-2 ">
         <icon icon="lets-icons:date-today-duotone" class="fs-4 text-primary" />
         <span class="fw-bold">
-          {{ new Date($store.state.event.start).toLocaleString() }} - {{ new
-            Date($store.state.event.start).toLocaleString() }}
+          {{ new Date($store.state.event.start).toDateString() }}, {{ new Date($store.state.event.start).getHours() + ":" + new Date($store.state.event.start).getMinutes() }}
         </span>
       </div>
       <br>

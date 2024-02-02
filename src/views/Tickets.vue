@@ -17,9 +17,9 @@
 				</div>
 			</div>
 			<div class="mb-3 float-end">
-				<button class="btn btn-primary mt-3" @click="isScanning = true">
+				<router-link class="btn btn-primary mt-3" :to="'/scan/' + $route.params.id">
 					Scan Tickets
-				</button>
+				</router-link>
 			</div>
 		</div>
 		<div>
